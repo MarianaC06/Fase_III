@@ -1,0 +1,14 @@
+{
+  "records_original": 200000,
+  "records_valid": 191893,
+  "train_rows": 153514,
+  "test_rows": 38379,
+  "mae_usd": 1.6916,
+  "rmse_usd": 3.4262,
+  "r2": 0.873,
+  "baseline_mae_usd": 5.3341,
+  "model_version": "1.0.0",
+  "split_seed": 42,
+  "dataset_sha256": "94ab9d3bb2a1a987b8d89407047bcb541b17e765b31537fbf36e5c14b71e1e18",
+  "python": "3.13.5"
+}

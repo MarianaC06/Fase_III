@@ -1,0 +1,17 @@
+name: CI MLOps
+on:
+  push:
+  pull_request:
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -r requirements.txt
+      - run: pytest -q
+      - name: Validate model artifact when available
+        run: |
+          if [ -f artifacts/metrics.json ]; then python -c "import json; m=json.load(open('artifacts/metrics.json')); assert m['mae_usd'] < m['baseline_mae_usd']"; fi
