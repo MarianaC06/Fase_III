@@ -9,6 +9,6 @@ jobs:
         with:
           python-version: "3.11"
       - run: pip install -r requirements.txt
-      - run: pytest -q
+      - run: python -m pytest -q
       - run: python -c "import json; m=json.load(open('artifacts/metrics.json')); assert m['mae_usd'] < m['baseline_mae_usd']"
       - run: docker build -t uberfare-ai:ci .
