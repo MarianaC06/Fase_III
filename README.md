@@ -1,23 +1,25 @@
-# UberFare AI — MLOps + GitOps (prototipo reproducible)
+# UberFare AI | Fase III integrada
 
-Predicción de tarifas históricas de Uber NYC con datos 2009–2015. No representa precios actuales.
+Integra la **API e interfaz web de fase II** con el **modelo, métricas y pipeline de fase III**. El modelo canónico es `artifacts/model.joblib` (HistGradientBoostingRegressor); no se mezclan predicciones de modelos distintos.
 
-## Ejecución
-
+## Ejecutar
 ```bash
+python -m venv .venv
+# activar el entorno virtual
 pip install -r requirements.txt
 pytest -q
-python src/pipeline.py --input data/uber.csv --output artifacts
-python src/predict.py --model artifacts/model.joblib --json '[{"pickup_datetime":"2015-05-07 19:52:06 UTC","pickup_latitude":40.738354,"pickup_longitude":-73.999817,"dropoff_latitude":40.723217,"dropoff_longitude":-73.999512,"passenger_count":1}]'
+uvicorn app.main:app --reload
 ```
+Abrir http://127.0.0.1:8000 y http://127.0.0.1:8000/docs.
 
-Coloca `uber.csv` en `data/`. El entrenamiento genera modelo, métricas y predicciones de muestra. El workflow de GitHub Actions ejecuta pruebas en cada push/PR al publicar el repositorio. `gitops/deployment.yaml` documenta un estado deseado ilustrativo: **no** constituye un despliegue real ni un servicio de inferencia implementado.
+## Entrenar de nuevo
+`python -m src.pipeline --input data/uber.csv --output artifacts`
 
-## Diseño y limitaciones
+## Contenedor
+`docker compose up --build` (requiere Docker instalado; no se afirma que haya sido ejecutado).
 
-- Limpieza: tarifa 2.5–200 USD, pasajeros 1–6, coordenadas aproximadas del área de NYC y distancia 0.1–100 km.
-- Variables: distancia Haversine, hora, día, mes, año, pasajeros y coordenadas.
-- División aleatoria 80/20 con semilla 42; evaluación retrospectiva, no validación temporal de producción.
-- Modelo: HistGradientBoostingRegressor. Métricas MAE, RMSE, R² y baseline de mediana.
-- No se ha realizado integración con GitHub, Kubernetes, Argo CD, DVC, MLflow ni monitoreo continuo real; se describe su diseño objetivo en los PDF.
-- Para producción: añadir API autenticada, imagen Docker, escaneo de seguridad, registro de modelos, GitOps reconciliado, alertas, trazabilidad, evaluación temporal y pruebas de carga.
+## Evidencias
+`evidencias/` contiene salida de pruebas, métricas y verificaciones locales. Las capturas originales de fase II se preservan en `docs/FaseII_Pruebas_Uber.pdf`. GitHub Actions y Kubernetes son configuraciones; deben ejecutarse en infraestructura real para obtener evidencia de despliegue.
+
+## Limitaciones
+Datos de 2009-2015; no predice tarifas dinámicas actuales. Los errores son de evaluación histórica. El modelo de fase II se conserva únicamente como antecedente documental.

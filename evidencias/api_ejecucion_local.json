@@ -1,0 +1,21 @@
+{
+  "health": {
+    "status_code": 200,
+    "response": {
+      "status": "ok",
+      "model_loaded": true,
+      "model_version": "1.0.0"
+    }
+  },
+  "predict": {
+    "status_code": 200,
+    "response": {
+      "estimated_fare_usd": 8.72,
+      "distance_km": 1.68,
+      "note": "Estimación académica basada en viajes históricos; no es una tarifa actual de Uber."
+    }
+  },
+  "validation": {
+    "status_code": 422
+  }
+}

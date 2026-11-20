@@ -1,0 +1,6 @@
+data/
+docs/
+evidencias/
+.git/
+__pycache__/
+.pytest_cache/

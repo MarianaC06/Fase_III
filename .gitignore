@@ -1,5 +1,10 @@
 __pycache__/
 .pytest_cache/
-.venv/
-data/
 *.pyc
+.env
+.venv/
+venv/
+.env.*
+!.env.example
+.ipynb_checkpoints/
+*.log
