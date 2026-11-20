@@ -1,0 +1,19 @@
+{
+  "sample_http_statuses": [
+    200,
+    422,
+    200
+  ],
+  "monitoring": {
+    "total_prediction_requests": 3,
+    "successful_predictions": 2,
+    "rejected_predictions": 1,
+    "server_errors": 0,
+    "p95_latency_ms": 24.002,
+    "status_counts": {
+      "200": 2,
+      "422": 1
+    },
+    "note": "Métricas de solicitudes locales. No miden drift ni precisión en producción."
+  }
+}

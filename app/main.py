@@ -1,3 +1,6 @@
+import time
+from fastapi import Request
+from app import monitoring
 from pathlib import Path
 from datetime import datetime
 from typing import Annotated
@@ -9,6 +12,26 @@ from pydantic import BaseModel, Field
 from src.pipeline import prepare, FEATURES
 ROOT=Path(__file__).resolve().parents[1]
 app=FastAPI(title='Uber Fare Predictor API',version='1.0.0')
+@app.middleware("http")
+async def audit_requests(request: Request, call_next):
+    start = time.perf_counter()
+    status = 500
+
+    try:
+        response = await call_next(request)
+        status = response.status_code
+        return response
+    finally:
+        if request.url.path == "/predict":
+            duration_ms = (time.perf_counter() - start) * 1000
+
+            monitoring.record(
+                method=request.method,
+                route=request.url.path,
+                status=status,
+                duration_ms=duration_ms,
+                model_version=bundle["version"]
+            )
 bundle=joblib.load(ROOT/'artifacts'/'model.joblib')
 model=bundle['model']
 class Ride(BaseModel):
@@ -31,3 +54,6 @@ def predict(ride:Ride):
     if not .1<=distance<=100:raise HTTPException(422,'La distancia debe estar entre 0.1 y 100 km')
     fare=max(0,float(model.predict(X[FEATURES])[0]))
     return {'estimated_fare_usd':round(fare,2),'distance_km':round(distance,2),'note':'Estimación académica basada en viajes históricos; no es una tarifa actual de Uber.'}
+@app.get("/monitoring/summary")
+def monitoring_summary():
+    return monitoring.summary()
